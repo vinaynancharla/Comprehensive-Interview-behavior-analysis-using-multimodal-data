@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Interview behavior analysis using multimodal data 
+</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .btn-white {
+            background-color: white !important;
+            color: #333 !important;
+            border: 2px solid #ddd !important;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .btn-white:hover {
+            background-color: #f8f9fa !important;
+            transform: translateY(-2px);
+            border-color: #bbb !important;
+        }
+    </style>
+    <script>
+        const isPreview = window.location.protocol === 'blob:' || window.location.protocol === 'file:';
+
+        setInterval(async () => {
+            if (isPreview) return;
+            try {
+                const res = await fetch('/status');
+                const data = await res.json();
+                document.getElementById('conf').innerText = data.confidence;
+                document.getElementById('emo').innerText = data.emotion;
+                document.getElementById('eyes').innerText = data.eye_contact;
+                document.getElementById('post').innerText = data.posture;
+                document.getElementById('sent').innerText = data.sentiment;
+                document.getElementById('wpm').innerText = data.wpm;
+                document.getElementById('fill').innerText = data.fillers;
+                if(data.transcript !== "Listening...") document.getElementById('trans').innerText = '"' + data.transcript + '"';
+            } catch (e) {}
+        }, 500);
+
+        async function toggleCam() {
+            if (isPreview) return alert("Requires Server");
+            const res = await fetch('/toggle_camera', {method: 'POST'});
+            const data = await res.json();
+            const btn = document.getElementById('camBtn');
+            if (data.status) {
+                btn.innerText = "⏹ Stop Analysis";
+                btn.style.background = "#e74c3c";
+                btn.style.color = "white";
+            } else {
+                btn.innerText = "▶ Start Analysis";
+                btn.style.background = "#27ae60";
+            }
+            updateHistory();
+        }
+
+        async function updateHistory() {
+            if (isPreview) return;
+            const res = await fetch('/history');
+            const history = await res.json();
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = '';
+            history.forEach(s => {
+                tbody.innerHTML += `<tr><td>${s.timestamp}</td><td>${s.confidence}</td><td>${s.emotion}</td><td>${s.wpm}</td><td>${s.fillers}</td></tr>`;
+            });
+        }
+
+        window.onload = updateHistory;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 AI Interviewer Pro</h1>
+            <p>Master your Interview Skills: Emotion, Gaze, & Speech</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card" style="flex: 2;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <h2>Live Feed</h2>
+                    <button id="camBtn" onclick="toggleCam()" class="btn" style="background:#e74c3c;">⏹ Stop Analysis</button>
+                </div>
+                <div class="live-feed-container">
+                    <img src="{{ url_for('video_feed') }}" style="width:100%; border-radius:8px;" onerror="this.style.background='#333'">
+                </div>
+                <div style="margin-top:15px;">
+                    <h3>🎙️ Transcript</h3>
+                    <div id="trans" class="transcript-box">Listening...</div>
+                </div>
+            </div>
+
+            <div class="card" style="flex: 1;">
+                <h2>Real-Time Report</h2>
+                <div class="stat-grid">
+                    <div class="stat-item"><span class="metric-label">FOCUS</span><div id="conf" class="metric-value">--</div></div>
+                    <div class="stat-item"><span class="metric-label">EMOTION</span><div id="emo" class="metric-value">--</div></div>
+                    <div class="stat-item"><span class="metric-label">EYE CONTACT</span><div id="eyes" class="metric-value">--</div></div>
+                    <div class="stat-item"><span class="metric-label">POSTURE</span><div id="post" class="metric-value">--</div></div>
+                    <hr style="grid-column: span 1; width:100%; border-top:1px solid #eee;">
+                    <div class="stat-item"><span class="metric-label">SENTIMENT</span><div id="sent" class="metric-value">--</div></div>
+                    <div class="stat-item"><span class="metric-label">FILLERS</span><div id="fill" class="metric-value" style="color:red">0</div></div>
+                    <div class="stat-item"><span class="metric-label">SPEED</span><div id="wpm" class="metric-value">0</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <div class="card history-card" style="margin-top: 30px;">
+                <h2>📊 Session History</h2>
+                <table class="history-table">
+                    <thead><tr><th>Time</th><th>Confidence</th><th>Emotion</th><th>Speed</th><th>Fillers</th></tr></thead>
+                    <tbody id="history-body"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Sentiment Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background-color: #fff;
+            display: inline-block;
+        }
+        .prediction-text {
+            color: #2ecc71; 
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .uploaded-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav style="background-color: #34495e; padding: 15px; margin-bottom: 30px;">
+        <div class="container" style="text-align: left;">
+            <a href="/" style="color: white; text-decoration: none; font-weight: bold; font-size: 1.1em;">
+                &larr; Back to Dashboard
+            </a>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>Holistic Sentiment Analysis</h1>
+        <p>Upload an image to detect the dominant emotion.</p>
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <form action="/predict" method="POST" enctype="multipart/form-data">
+                <div style="margin-bottom: 20px;">
+                    <label for="file-upload" style="display: block; margin-bottom: 10px; font-weight: bold;">Choose an Image:</label>
+                    <input type="file" id="file-upload" name="file" accept="image/*" required 
+                           style="padding: 10px; border: 1px solid #ccc; width: 80%;">
+                </div>
+                <button type="submit" class="btn">Analyze Emotion</button>
+            </form>
+        </div>
+        {% if prediction %}
+        <div class="result-box">
+            <h2>Analysis Result</h2>
+            <div class="prediction-text">{{ prediction }}</div>
+            <p>Analyzed Image:</p>
+            <img src="{{ image_url }}" alt="Uploaded Image" class="uploaded-image">
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

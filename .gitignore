@@ -1,0 +1,45 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Project data and large artifacts
+sentiment_webapp/dataset/
+sentiment_webapp/models/
+sentiment_webapp/sessions/
+sentiment_webapp/instance/
+sentiment_webapp/static/uploads/
+sentiment_webapp/static/videos/
+
+# Model and data file types (if placed elsewhere)
+*.keras
+*.h5
+*.hdf5
+*.npz
+*.npy
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs and backups
+*.log
+*.bak
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment and secrets
+.env
+.env.*
