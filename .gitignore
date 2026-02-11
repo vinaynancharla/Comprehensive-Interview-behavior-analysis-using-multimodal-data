@@ -9,7 +9,16 @@ venv/
 env/
 
 # Project data and large artifacts
+# Top-level large dirs
+dataset/
+fer2013/
+models/
+sessions/
+instance/
+
+# App-level large dirs
 sentiment_webapp/dataset/
+sentiment_webapp/fer2013/
 sentiment_webapp/models/
 sentiment_webapp/sessions/
 sentiment_webapp/instance/
